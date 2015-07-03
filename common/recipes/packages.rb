@@ -7,6 +7,8 @@ execute 'ossec-hids-2.8.2' do
 	cwd '/tmp'
 end
 
+package 'pexpect'
+
 script "python_install_ossec" do
   interpreter "python"
   user "root"
