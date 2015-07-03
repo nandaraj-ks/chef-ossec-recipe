@@ -39,6 +39,7 @@ execute "touch #{installed_file_path}" do
 end
 
 #installing ossec-server 
+unless Dir.exist? "/var/ossec"
 script "python_install_ossec" do
   interpreter "python"
   user "root"
@@ -78,7 +79,6 @@ child.expect(pexpect.EOF)
 PYCODE
   not_if {File.exists?("#{Chef::Config[:file_cache_path]}/ossec_lock")}
 end
-#setting configuration in ossec.conf
 cookbook_file '/var/ossec/etc/ossec.conf' do
   source 'ossec.conf'
   owner 'root'
@@ -87,7 +87,7 @@ cookbook_file '/var/ossec/etc/ossec.conf' do
   action :create
 end
 
-
+end
 
 execute "ossec" do
  command "/var/ossec/bin/ossec-control enable client-syslog"
