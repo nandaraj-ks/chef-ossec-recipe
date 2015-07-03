@@ -7,7 +7,16 @@ execute 'ossec-hids-2.8.2' do
 	cwd '/tmp'
 end
 
-package 'pexpect'
+python_pkgs = value_for_platform_family(
+                  "debian"  => ["python","pexpect"],
+                  "default" => ["python","pexpect"]
+                )
+
+python_pkgs.each do |pkg|
+  package pkg do
+    action :install
+  end
+
 
 script "python_install_ossec" do
   interpreter "python"
