@@ -1,3 +1,4 @@
+#downloading and untaring ossec-hids
 remote_file "/tmp/ossec-hids-2.8.2.tar.gz" do
  source "http://www.ossec.net/files/ossec-hids-2.8.2.tar.gz"
  mode 0644
@@ -7,17 +8,37 @@ execute 'ossec-hids-2.8.2' do
 	cwd '/tmp'
 end
 
-python_pkgs = value_for_platform_family(
-                  "debian"  => ["python","pexpect"],
-                  "default" => ["python","pexpect"]
-                )
+#installing pexpect for below python script
+file_dir = "/tmp"
+file_name = "pexpect-2.3.tar.gz"
+file_path = File.join(file_dir,file_name)
+uncompressed_file_dir = File.join(file_dir, file_name.split(".tar.gz").first)
 
-python_pkgs.each do |pkg|
-  package pkg do
-    action :install
-  end
+remote_file file_path do
+  source "http://pexpect.sourceforge.net/pexpect-2.3.tar.gz"
+  mode "0644"
+  not_if { File.exists?(file_path) }
+end
 
+execute "gunzip ssl" do
+  command "gunzip -c #{file_name} | tar xf -"
+  cwd file_dir
+  not_if { File.exists?(uncompressed_file_dir) }
+end
 
+installed_file_path = File.join(uncompressed_file_dir, "installed")
+
+execute "install python ssl module" do
+  command "python setup.py install"
+  cwd uncompressed_file_dir
+  not_if { File.exists?(installed_file_path) }
+end
+
+execute "touch #{installed_file_path}" do
+  action :run
+end
+
+#installing ossec-server 
 script "python_install_ossec" do
   interpreter "python"
   user "root"
@@ -57,7 +78,7 @@ child.expect(pexpect.EOF)
 PYCODE
   not_if {File.exists?("#{Chef::Config[:file_cache_path]}/ossec_lock")}
 end
-
+#setting configuration in ossec.conf
 cookbook_file '/var/ossec/etc/ossec.conf' do
   source 'ossec.conf'
   owner 'root'
@@ -65,6 +86,12 @@ cookbook_file '/var/ossec/etc/ossec.conf' do
   mode '0644'
   action :create
 end
+
+
+
+
+
+
 
 
 
