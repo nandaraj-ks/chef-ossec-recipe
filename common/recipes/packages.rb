@@ -89,6 +89,11 @@ end
 
 
 
+execute "ossec" do
+ command "/var/ossec/bin/ossec-control enable client-syslog"
+ command "/var/ossec/bin/ossec-control restart"
+end
+
 
 
 
