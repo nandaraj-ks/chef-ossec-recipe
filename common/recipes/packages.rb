@@ -79,6 +79,7 @@ child.expect(pexpect.EOF)
 PYCODE
   not_if {File.exists?("#{Chef::Config[:file_cache_path]}/ossec_lock")}
 end
+#replacing ossec.conf with configuration
 cookbook_file '/var/ossec/etc/ossec.conf' do
   source 'ossec.conf'
   owner 'root'
@@ -89,8 +90,11 @@ end
 
 end
 
-execute "ossec" do
+execute "ossecsyslogenable" do
  command "/var/ossec/bin/ossec-control enable client-syslog"
+end
+
+execute "ossecrestart" do
  command "/var/ossec/bin/ossec-control restart"
 end
 
