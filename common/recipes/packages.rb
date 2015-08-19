@@ -39,7 +39,7 @@ execute "touch #{installed_file_path}" do
 end
 
 #installing ossec-server 
-#unless Dir.exist? "/var/ossec"
+
 script "python_install_ossec" do
   interpreter "python"
   user "root"
