@@ -88,7 +88,7 @@ cookbook_file '/var/ossec/etc/ossec.conf' do
   action :create
 end
 
-end
+#end
 
 execute "ossecsyslogenable" do
  command "/var/ossec/bin/ossec-control enable client-syslog"
