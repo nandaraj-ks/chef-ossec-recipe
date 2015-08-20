@@ -38,8 +38,6 @@ execute "touch #{installed_file_path}" do
   action :run
 end
 
-#installing ossec-server 
-unless Dir.exists? "/var/ossec"
 script "python_install_ossec" do
   interpreter "python"
   user "root"
@@ -88,7 +86,6 @@ cookbook_file '/var/ossec/etc/ossec.conf' do
   action :create
 end
 
-end
 
 execute "ossecsyslogenable" do
  command "/var/ossec/bin/ossec-control enable client-syslog"
